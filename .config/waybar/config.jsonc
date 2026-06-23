@@ -38,6 +38,7 @@
         "format": "{icon} {volume}%",
         "format-muted": " muted",
         "format-icons": {
+            "headset": "",
             "headphone": "",
             "default": ["", "", ""]
         },
