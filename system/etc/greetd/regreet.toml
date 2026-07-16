@@ -1,0 +1,12 @@
+[background]
+path = "/usr/share/backgrounds/bridge_sunset.jpg"
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = true
+font_name = "FiraMono Nerd Font Propo 12"
+
+[commands]
+reboot = [ "systemctl", "reboot" ]
+poweroff = [ "systemctl", "poweroff" ]
+

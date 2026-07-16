@@ -1,0 +1,24 @@
+# WARNING: This file replaces stow's built-in default ignore list entirely.
+# The entries below "system" are exactly those defaults and must stay here,
+# otherwise .git ends up symlinked as ~/.git.
+
+# Not stowed into $HOME: installed to /etc as root instead (see README).
+^/system
+
+# --- stow defaults from here on ---
+RCS
+.+,v
+CVS
+\.\#.+
+\.cvsignore
+\.svn
+_darcs
+\.hg
+\.git
+\.gitignore
+\.gitmodules
+.+~
+\#.*\#
+^/README.*
+^/LICENSE.*
+^/COPYING

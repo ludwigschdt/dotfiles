@@ -1,0 +1,290 @@
+/* Regreet theme — matches the waybar "translucent rounded islands" look.
+ * Strictly monochrome: dark translucent surfaces, translucent-white accents,
+ * no hues. FiraMono Nerd Font Propo.
+ *
+ * Selectors below track regreet 0.3.0's widget tree (src/gui/templates.rs):
+ *
+ *   overlay
+ *   ├── picture                     background image
+ *   ├── frame.background            login card
+ *   │   └── grid
+ *   │       ├── label:first-child   message
+ *   │       ├── label               User:/Session:/prompt
+ *   │       ├── combobox > button   selectors (the button is the visible field)
+ *   │       ├── entry               username / secret
+ *   │       └── button              edit toggles, Cancel, Login
+ *   ├── frame.background            clock
+ *   │   └── label
+ *   └── box
+ *       ├── frame > infobar         error bar (this frame has NO .background)
+ *       └── box > button.destructive-action
+ *
+ * Every surface uses ONE fill (0.88). That is deliberate: these are translucent,
+ * so a fill only looks the same in two places if little enough of the photo
+ * reaches through to tint it. A lighter clock picks up whatever it happens to
+ * sit over — sunset sky makes it warm — while the buttons over dark ground stay
+ * neutral, and the two visibly stop matching. Keeping the fill heavy enough that
+ * the wallpaper barely shows is what holds them together, on any image or
+ * resolution. Change the fill in one place and change it everywhere.
+ *
+ * Set in Rust and NOT overridable here: grid spacing (15px), the label column
+ * width (100px, right-aligned), and the message label's bold weight (Pango).
+ */
+
+/* Neutralise GTK's accent/destructive colours at their source, so the blue
+ * "Login" and red "Reboot/Power Off" lose their hue even where theme rules
+ * out-specify ours. */
+@define-color accent_bg_color rgba(255, 255, 255, 0.16);
+@define-color accent_fg_color #f0f0f0;
+@define-color accent_color #f0f0f0;
+@define-color destructive_bg_color rgba(255, 255, 255, 0.05);
+@define-color destructive_fg_color rgba(240, 240, 240, 0.65);
+@define-color destructive_color rgba(240, 240, 240, 0.65);
+
+@define-color fg #f0f0f0;
+@define-color fg_dim rgba(240, 240, 240, 0.55);
+@define-color fg_faint rgba(240, 240, 240, 0.30);
+@define-color hairline rgba(255, 255, 255, 0.09);
+
+* {
+    font-family: "FiraMono Nerd Font Propo", monospace;
+    font-size: 14px;
+    color: @fg;
+}
+
+/* Islands: the card and the clock. The card sits over the bright half of the
+ * wallpaper, so it needs to be opaque enough to hold #f0f0f0 text — hence
+ * heavier than waybar's 0.45. The 1px inner top highlight is the "lit edge"
+ * that separates the island from the photo behind it. */
+frame.background {
+    background-color: rgba(0, 0, 0, 0.88);
+    border: 1px solid @hairline;
+    border-radius: 16px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        0 16px 44px rgba(0, 0, 0, 0.50);
+}
+
+/* Card interior. The grid already carries 15px margins from Rust; this tops it
+ * up to a more generous inset. */
+frame.background > grid {
+    padding: 12px 14px 10px 14px;
+}
+
+/* Clock: a tab hanging off the top edge. Its flat top corners come from
+ * inline CSS in regreet itself. It takes the shared frame.background fill above
+ * — see the header on why it is not lightened. */
+frame.background > label {
+    background-color: transparent;
+    padding: 6px 20px 8px 20px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: @fg;
+}
+
+/* The message ("Welcome back!") — the card's one piece of scale. Bold weight is
+ * forced by Pango in Rust; only size and tracking are ours. */
+frame.background > grid > label:first-child {
+    font-size: 21px;
+    letter-spacing: -0.3px;
+    text-transform: none;
+    color: @fg;
+}
+
+/* Field labels: small, tracked, recessive — they name the field, the value is
+ * the thing worth reading. */
+frame.background > grid > label {
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: @fg_dim;
+}
+
+/* Text inputs and the session/user selectors: darker inset islands */
+combobox {
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    min-height: 0;
+}
+
+entry,
+combobox button {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0.32);
+    color: @fg;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+    min-height: 26px;
+    transition: background-color 120ms ease-out,
+                border-color 120ms ease-out,
+                box-shadow 120ms ease-out;
+}
+
+entry > text,
+entry > text > placeholder {
+    color: @fg;
+}
+
+entry > text {
+    caret-color: @fg;
+}
+
+/* Focus: a soft halo rather than a colour change — the only "bright" moment in
+ * the theme, so it reads as focus without introducing a hue. */
+entry:focus-within,
+combobox button:focus,
+combobox button:focus-visible {
+    background-color: rgba(0, 0, 0, 0.50);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.25),
+        0 0 0 3px rgba(255, 255, 255, 0.10);
+    outline: none;
+}
+
+/* Buttons: minimal outlined pills — faint fill, hairline edge, brighten on
+ * interaction. No colour anywhere. Selectors are specificity-bumped (doubled
+ * classes / :not) so they out-rank GTK's themed button rules. */
+button,
+button.text-button,
+button.image-button {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: @fg;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 8px 16px;
+    box-shadow: none;
+    text-shadow: none;
+    min-height: 26px;
+    transition: background-color 120ms ease-out,
+                border-color 120ms ease-out;
+}
+
+button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+button:active,
+button:checked {
+    background-color: rgba(255, 255, 255, 0.20);
+}
+
+button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Disabled (eg. the edit toggles while a password is being asked for): recede,
+ * don't grey out into GTK's default muddy fill. */
+button:disabled,
+entry:disabled,
+combobox button:disabled {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: @fg_faint;
+    box-shadow: none;
+}
+
+entry:disabled > text {
+    color: @fg_faint;
+}
+
+/* Login / suggested action: a hair more solid, still colourless. */
+button.suggested-action.suggested-action {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.24);
+    color: @fg;
+    box-shadow: none;
+    padding: 8px 22px;
+}
+
+button.suggested-action.suggested-action:hover {
+    background-color: rgba(255, 255, 255, 0.26);
+    border-color: rgba(255, 255, 255, 0.34);
+}
+
+/* Reboot / Power Off: strip GTK's red. Same fill and lit edge as the other two
+ * islands, so all three read as one family; only the shadow is smaller, because
+ * these are small and sit near the screen edge. */
+button.destructive-action.destructive-action {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0.88);
+    border: 1px solid @hairline;
+    color: @fg;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+button.destructive-action.destructive-action:hover {
+    background-color: rgba(28, 28, 28, 0.92);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: @fg;
+}
+
+/* The frame wrapping the error InfoBar has no .background class and stays in the
+ * tree even when the bar is hidden — left unstyled it renders as an empty box
+ * floating above the Reboot row. */
+frame:not(.background),
+frame:not(.background) > border {
+    background: none;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+}
+
+/* regreet keeps the InfoBar permanently visible and animates it with
+ * `set_revealed`, so a collapsed bar is a zero-height strip. Painting the
+ * `infobar` node itself turns that strip into a hairline across the screen;
+ * the fill goes on the inner box, which the revealer clips away when closed. */
+infobar {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    min-height: 0;
+}
+
+infobar > revealer > box {
+    background-color: rgba(0, 0, 0, 0.88);
+    border: 1px solid @hairline;
+    border-radius: 12px;
+    padding: 6px 14px;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.50);
+}
+
+infobar label {
+    color: @fg;
+}
+
+/* Dropdown popups for the selectors */
+combobox window,
+popover > contents {
+    background-color: rgba(20, 20, 20, 0.96);
+    border: 1px solid @hairline;
+    border-radius: 12px;
+    padding: 6px;
+    color: @fg;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.50);
+}
+
+popover > contents menuitem,
+combobox window menuitem {
+    border-radius: 8px;
+    padding: 6px 10px;
+    min-height: 0;
+}
+
+popover > contents menuitem:hover,
+combobox window menuitem:hover,
+combobox window menuitem:selected {
+    background-color: rgba(255, 255, 255, 0.12);
+}
