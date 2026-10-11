@@ -1,0 +1,30 @@
+(defcfg process-unmapped-keys yes)
+(defvar
+   trt 200
+   ht 200
+)
+(defsrc )
+(deflayermap default
+  d (tap-hold $trt $ht d (layer-while-held navigation))
+  s (tap-hold $trt $ht s (layer-while-held numbers))
+  e (tap-hold $trt $ht e (multi lmet (layer-while-held numbers)))
+)
+(deflayermap navigation
+  h lft
+  j down
+  k up
+  l rght
+  f lrld
+)
+(deflayermap numbers
+  m 1
+  , 2
+  . 3
+  j 4
+  k 5
+  l 6
+  u 7
+  i 8
+  o 9
+  ; 0
+)
