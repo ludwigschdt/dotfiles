@@ -8,6 +8,11 @@
   d (tap-hold $trt $ht d (layer-while-held navigation))
   s (tap-hold $trt $ht s (layer-while-held numbers))
   e (tap-hold $trt $ht e (multi lmet (layer-while-held numbers)))
+  x (tap-hold $trt $ht x lctl)
+  . (tap-hold $trt $ht . lctl)
+  r (tap-hold $trt $ht r lmet)
+  u (tap-hold $trt $ht u lmet)
+  caps (caps-word-toggle 5000)
 )
 (deflayermap navigation
   h lft
