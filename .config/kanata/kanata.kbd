@@ -11,7 +11,9 @@
   x (tap-hold $trt $ht x lctl)
   . (tap-hold $trt $ht . lctl)
   r (tap-hold $trt $ht r lmet)
-  u (tap-hold $trt $ht u lmet)
+  u (tap-hold $trt $ht u rmet)
+  c (tap-hold $trt $ht c lalt)
+  , (tap-hold $trt $ht , lalt)
   caps (caps-word-toggle 5000)
 )
 (deflayermap navigation
